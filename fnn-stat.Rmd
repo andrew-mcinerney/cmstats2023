@@ -46,6 +46,63 @@ library(interpretnn)
 ```
 
 
+```{r analysis, include=FALSE, cache=TRUE}
+
+# load packages -----------------------------------------------------------
+library(interpretnn)
+library(caret)
+library(selectnn)
+
+set.seed(1)
+
+# load data ---------------------------------------------------------------
+insurance <- read.csv("insurance.csv",
+                      stringsAsFactors = TRUE)
+
+dummy <- dummyVars(" ~ .", data = insurance)
+insurance <- data.frame(predict(dummy, newdata = insurance)) 
+
+
+# prep data --------------------------------------------------------
+
+std_X <- caret::preProcess(insurance[, c(1, 4, 5)])
+
+std_y <- caret::preProcess(data.frame("charges" = insurance[, 12]))
+
+X <- as.matrix(predict(std_X, insurance[, c(1, 4, 5)]))
+X <- cbind(X, insurance[, c(3, 7, 9:11)])
+X <- X[, c(1, 4, 2, 3, 5, 6:8)]
+y <- as.matrix(predict(std_y, data.frame("charges" = insurance[, 12])))
+df <- as.data.frame(cbind(X, y))
+
+# selectnn ----------------------------------------------------------------
+set.seed(2)
+nn <- selectnn(charges ~ ., data = df, Q = 8, n_init = 5)
+summary(nn)
+
+
+interpretnn.default <- function(object, B = 1, ...) {
+  
+  stnn <- interpretnn(object$nn, X = object$x, y = object$y, B = B)
+  
+  return(stnn)
+}
+
+# interpretnn -------------------------------------------------------------
+
+n_init <- 10
+q <- 2 # achieves VC that is positive definite
+
+lambda <- 0.1
+
+
+inn <- nn_fit(X, y, q, n_init, maxit = 2000, lambda = lambda)
+
+intnn <- interpretnn.default(inn)
+
+summary(intnn, wald_single_par = TRUE)
+```
+
 
 class: title-slide, left, bottom
 
@@ -325,6 +382,88 @@ knitr::include_graphics("img/insurance.png")
 
 
 ---
+class: selectnn-slide
+# Model Selection
+
+
+```{r, echo=FALSE, out.width="90%", fig.align="center"}
+knitr::include_graphics("img/modelsel.png")
+``` 
+
+A Statistically-Based Approach to Feedforward Neural Network Model Selection (arXiv:2207.04248)
+
+---
+class: selectnn-slide
+# Insurance: Model Selection 
+
+
+```{r selection, echo = TRUE, eval = FALSE, out.width="30%"}
+library(selectnn)
+nn <- selectnn(charges ~ ., data = insurance, Q = 8,
+               n_init = 5)
+summary(nn)
+```
+
+--
+
+```{r summ, echo = FALSE, cache = TRUE, class.output = "bg-primary"}
+cat(c("[...]", capture.output(summary(nn))[c(4:7, 10:14)], "[...]"), sep = "\n") 
+```
+
+---
+
+class: interpretnn-slide
+# Interpreting FNNs
+
+Extend packages: **nnet**, **neuralnet**, **keras**, **torch** 
+
+*  Significance testing
+
+*  Covariate-effect plots 
+
+---
+
+class: interpretnn-slide
+# Insurance: Model Summary 
+
+
+```{r, message = FALSE, eval = FALSE, tidy = FALSE}
+intnn <- interpretnn(nn)  
+summary(intnn)
+```
+
+--
+
+```{r summst, echo = FALSE, cache = TRUE, class.output = "bg-primary"}
+s <- summary(intnn, wald_single_par = TRUE)$coefdf
+s[, 5] <- round(s[, 5], 4)
+
+
+cat(c(capture.output(summary(intnn))[9],
+      capture.output(print(s[, c(1, 7, 4, 5, 6)], row.names = FALSE)),
+      capture.output(summary(intnn))[20:21])
+    , sep = "\n") 
+
+```
+
+---
+
+class: interpretnn-slide
+# Insurance: Model Summary 
+
+
+```{r, message = FALSE, eval = FALSE, tidy = FALSE}
+plotnn(intnn)
+```
+
+--
+
+```{r, echo=FALSE, out.width="70%", fig.align="center"}
+knitr::include_graphics("img/insurance-plotnn.png")
+``` 
+
+
+---
 # Conclusion
 
 --
@@ -338,6 +477,22 @@ knitr::include_graphics("img/insurance.png")
 --
 
 - Preliminary results look good
+
+---
+# Future Work
+
+--
+
+- More extensive simulation studies
+
+--
+
+- Comparison to other common approaches
+
+--
+
+- Possible extension to deep neural networks
+
 
 ---
 class: bigger

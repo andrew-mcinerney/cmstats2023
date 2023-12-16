@@ -1,6 +1,3 @@
-knitr
-fontawesome
-interpretnn
 ISLR2
 tidyverse
 ggplot2
@@ -11,8 +8,12 @@ purrr
 dplyr
 stringr
 forcats
-lubridate
 selectnn
+knitr
+statnnet
+nnet
+fontawesome
+statnn
+interpretnn
 lattice
 caret
-sparsenn
