@@ -133,7 +133,7 @@ code.r{
 }
 
 .small {
-    font-size: 1.5em;
+    font-size: 1.8em;
 }
 
 .smaller {
@@ -243,6 +243,14 @@ a:visited {
   background-image:    url(../img/interpretnn.png);
   background-position: 95% 10%;
   background-size:     150px;
+}
+
+.small-margin-slide  {
+  padding-left: 100px;
+}
+
+.small-margin-slide .slide-title {
+  padding-left: 0; /* Reset the padding for the title */
 }
 
 .interpretnn-slide {
