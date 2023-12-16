@@ -179,7 +179,7 @@ $$\text{NN}(X, \theta) = \phi_o \left[ \gamma_0+\sum_{k=1}^q \gamma_k \phi_h \le
 
 <p style="font-size: 0.85em">
 $$
- \text{SBIC} = -2\ell(\theta) + \log(n) \left[ \sum_{jk} \frac{{\omega_{jk}^2}}{\omega_{jk}^2 + \epsilon^2} + \sum_{k} \frac{{\gamma_k^2}}{\gamma_k^2 + \epsilon^2} + q + 1 \right]
+ \text{SBIC} = -2\ell(\theta) + \log(n) \left[ \sum_{jk} \frac{\omega_{jk}^2}{\omega_{jk}^2 + \epsilon^2} + \sum_{k} \frac{\gamma_k^2}{\gamma_k^2 + \epsilon^2} + q + 1 \right]
 $$
 </p>
 
@@ -247,7 +247,7 @@ class: inputgroup-slide
 
 <p style="font-size: 0.78em">
 $$
- \text{IN-SBIC} = -2\ell(\theta) + \log(n) \left[ q \times \sum_{j}\frac{||\omega_j||_2^2}{||\omega_j||_2^2 + \epsilon^2} + \sum_{k} \frac{{\gamma_k^2}}{\gamma_k^2 + \epsilon^2} + q + 1 \right]
+ \text{IN-SBIC} = -2\ell(\theta) + \log(n) \left[ q \times \sum_{j}\frac{||\omega_j||_2^2}{||\omega_j||_2^2 + \epsilon^2} + \sum_{k} \frac{\gamma_k^2}{\gamma_k^2 + \epsilon^2} + q + 1 \right]
 $$
 </p>
 
